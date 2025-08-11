@@ -10,6 +10,7 @@
   <dialect>2</dialect>
   <!-- Note that ArduPilot-specific messages should use the command id range from 150 to 250, to leave plenty of room for growth of common.xml If you prototype a message here, then you should consider if it is general enough to move into common.xml later -->
   <enums>
+	
     <enum name="ACCELCAL_VEHICLE_POS">
       <entry value="1" name="ACCELCAL_VEHICLE_POS_LEVEL"/>
       <entry value="2" name="ACCELCAL_VEHICLE_POS_LEFT"/>
@@ -174,6 +175,26 @@
       <entry value="42426" name="MAV_CMD_DO_CANCEL_MAG_CAL" hasLocation="false" isDestination="false">
         <description>Cancel a running magnetometer calibration.</description>
         <param index="1" label="Magnetometers Bitmask" minValue="0" maxValue="255" increment="1">Bitmask of magnetometers to cancel a running calibration (0 means all).</param>
+        <param index="2">Empty.</param>
+        <param index="3">Empty.</param>
+        <param index="4">Empty.</param>
+        <param index="5">Empty.</param>
+        <param index="6">Empty.</param>
+        <param index="7">Empty.</param>
+      </entry>
+      <entry value="42010" name="MAV_CMD_DO_DIVE" hasLocation="true" isDestination="false">
+        <description>Set TECS_SINK_MAX to 6 and TECS_PITCH_MIN to -10</description>
+        <param index="1">Empty.</param>
+        <param index="2">Empty.</param>
+        <param index="3">Empty.</param>
+        <param index="4">Empty.</param>
+        <param index="5">Empty.</param>
+        <param index="6">Empty.</param>
+        <param index="7">Empty.</param>
+      </entry>
+      <entry value="42011" name="MAV_CMD_DO_EXECUTE_SCRIPT" hasLocation="true" isDestination="false">
+        <description>Execute Lua script by ID</description>
+        <param index="1" label="Script ID">Script ID.</param>
         <param index="2">Empty.</param>
         <param index="3">Empty.</param>
         <param index="4">Empty.</param>

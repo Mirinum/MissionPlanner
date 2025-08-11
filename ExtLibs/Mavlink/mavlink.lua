@@ -371,6 +371,21 @@ messageName = {
 }
 
 local enumEntryName = {
+    ["ACCELCAL_VEHICLE_POS"] = {
+        [1] = "ACCELCAL_VEHICLE_POS_LEVEL",
+        [2] = "ACCELCAL_VEHICLE_POS_LEFT",
+        [3] = "ACCELCAL_VEHICLE_POS_RIGHT",
+        [4] = "ACCELCAL_VEHICLE_POS_NOSEDOWN",
+        [5] = "ACCELCAL_VEHICLE_POS_NOSEUP",
+        [6] = "ACCELCAL_VEHICLE_POS_BACK",
+        [16777215] = "ACCELCAL_VEHICLE_POS_SUCCESS",
+        [16777216] = "ACCELCAL_VEHICLE_POS_FAILED",
+    },
+    ["HEADING_TYPE"] = {
+        [0] = "HEADING_TYPE_COURSE_OVER_GROUND",
+        [1] = "HEADING_TYPE_HEADING",
+        [2] = "HEADING_TYPE_DEFAULT",
+    },
     ["MAV_CMD"] = {
         [16] = "MAV_CMD_NAV_WAYPOINT",
         [17] = "MAV_CMD_NAV_LOITER_UNLIM",
@@ -578,21 +593,6 @@ local enumEntryName = {
         [60070] = "MAV_CMD_PRS_SET_ARM_ALTI",
         [60071] = "MAV_CMD_PRS_GET_ARM_ALTI",
         [60072] = "MAV_CMD_PRS_SHUTDOWN",
-    },
-    ["ACCELCAL_VEHICLE_POS"] = {
-        [1] = "ACCELCAL_VEHICLE_POS_LEVEL",
-        [2] = "ACCELCAL_VEHICLE_POS_LEFT",
-        [3] = "ACCELCAL_VEHICLE_POS_RIGHT",
-        [4] = "ACCELCAL_VEHICLE_POS_NOSEDOWN",
-        [5] = "ACCELCAL_VEHICLE_POS_NOSEUP",
-        [6] = "ACCELCAL_VEHICLE_POS_BACK",
-        [16777215] = "ACCELCAL_VEHICLE_POS_SUCCESS",
-        [16777216] = "ACCELCAL_VEHICLE_POS_FAILED",
-    },
-    ["HEADING_TYPE"] = {
-        [0] = "HEADING_TYPE_COURSE_OVER_GROUND",
-        [1] = "HEADING_TYPE_HEADING",
-        [2] = "HEADING_TYPE_DEFAULT",
     },
     ["SCRIPTING_CMD"] = {
         [0] = "SCRIPTING_CMD_REPL_START",

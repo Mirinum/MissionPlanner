@@ -49,6 +49,7 @@ namespace AltitudeAngelWings.Plugin
                 cmd != MAVLink.MAV_CMD.FENCE_CIRCLE_EXCLUSION &&
                 cmd != MAVLink.MAV_CMD.RALLY_POINT &&
                 cmd != MAVLink.MAV_CMD.PAYLOAD_PREPARE_DEPLOY &&
+                cmd != MAVLink.MAV_CMD.DO_DIVE &&
                 cmd != MAVLink.MAV_CMD.WAYPOINT_USER_1 &&
                 cmd != MAVLink.MAV_CMD.WAYPOINT_USER_2 &&
                 cmd != MAVLink.MAV_CMD.WAYPOINT_USER_3 &&

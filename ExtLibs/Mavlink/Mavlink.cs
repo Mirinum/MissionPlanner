@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 
 public partial class MAVLink
 {
-    public const string MAVLINK_BUILD_DATE = "Wed Jun 11 2025";
+    public const string MAVLINK_BUILD_DATE = "Mon Aug 11 2025";
     public const string MAVLINK_WIRE_PROTOCOL_VERSION = "2.0";
     public const int MAVLINK_MAX_PAYLOAD_LEN = 255;
 
@@ -1394,6 +1394,14 @@ public partial class MAVLink
         ///<summary> Set EKF sensor source set. |Source Set Id.| Empty.| Empty.| Empty.| Empty.| Empty.| Empty.|  </summary>
         [Description("Set EKF sensor source set.")]
         SET_EKF_SOURCE_SET=42007, 
+        ///<summary> Set TECS_SINK_MAX to 6 and TECS_PITCH_MIN to -10 |Empty.| Empty.| Empty.| Empty.| Empty.| Empty.| Empty.|  </summary>
+        [Description("Set TECS_SINK_MAX to 6 and TECS_PITCH_MIN to -10")]
+        [hasLocation()]
+        DO_DIVE=42010, 
+        ///<summary> Execute Lua script by ID |Script ID.| Empty.| Empty.| Empty.| Empty.| Empty.| Empty.|  </summary>
+        [Description("Execute Lua script by ID")]
+        [hasLocation()]
+        DO_EXECUTE_SCRIPT=42011, 
         ///<summary> Initiate a magnetometer calibration. |Bitmask of magnetometers to calibrate. Use 0 to calibrate all sensors that can be started (sensors may not start if disabled, unhealthy, etc.). The command will NACK if calibration does not start for a sensor explicitly specified by the bitmask.| Automatically retry on failure (0=no retry, 1=retry).| Save without user input (0=require input, 1=autosave).| Delay.| Autoreboot (0=user reboot, 1=autoreboot).| Empty.| Empty.|  </summary>
         [Description("Initiate a magnetometer calibration.")]
         DO_START_MAG_CAL=42424, 

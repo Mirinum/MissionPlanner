@@ -942,6 +942,15 @@
       <Y></Y>
       <Z></Z>
     </DO_SET_RESUME_REPEAT_DIST>
+    <DO_DIVE>
+      <P1></P1>
+      <P2></P2>
+      <P3></P3>
+      <P4></P4>
+      <X>Lat</X>
+      <Y>Long</Y>
+      <Z unitType="alt">Alt</Z>
+    </DO_DIVE>
   </APM>
   <!-- -->
   <APRover>
