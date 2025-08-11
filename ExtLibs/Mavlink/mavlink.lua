@@ -371,21 +371,6 @@ messageName = {
 }
 
 local enumEntryName = {
-    ["ACCELCAL_VEHICLE_POS"] = {
-        [1] = "ACCELCAL_VEHICLE_POS_LEVEL",
-        [2] = "ACCELCAL_VEHICLE_POS_LEFT",
-        [3] = "ACCELCAL_VEHICLE_POS_RIGHT",
-        [4] = "ACCELCAL_VEHICLE_POS_NOSEDOWN",
-        [5] = "ACCELCAL_VEHICLE_POS_NOSEUP",
-        [6] = "ACCELCAL_VEHICLE_POS_BACK",
-        [16777215] = "ACCELCAL_VEHICLE_POS_SUCCESS",
-        [16777216] = "ACCELCAL_VEHICLE_POS_FAILED",
-    },
-    ["HEADING_TYPE"] = {
-        [0] = "HEADING_TYPE_COURSE_OVER_GROUND",
-        [1] = "HEADING_TYPE_HEADING",
-        [2] = "HEADING_TYPE_DEFAULT",
-    },
     ["MAV_CMD"] = {
         [16] = "MAV_CMD_NAV_WAYPOINT",
         [17] = "MAV_CMD_NAV_LOITER_UNLIM",
@@ -558,6 +543,8 @@ local enumEntryName = {
         [42005] = "MAV_CMD_FIXED_MAG_CAL_FIELD",
         [42006] = "MAV_CMD_FIXED_MAG_CAL_YAW",
         [42007] = "MAV_CMD_SET_EKF_SOURCE_SET",
+        [42010] = "MAV_CMD_DO_DIVE",
+        [42011] = "MAV_CMD_DO_EXECUTE_SCRIPT",
         [42424] = "MAV_CMD_DO_START_MAG_CAL",
         [42425] = "MAV_CMD_DO_ACCEPT_MAG_CAL",
         [42426] = "MAV_CMD_DO_CANCEL_MAG_CAL",
@@ -591,6 +578,21 @@ local enumEntryName = {
         [60070] = "MAV_CMD_PRS_SET_ARM_ALTI",
         [60071] = "MAV_CMD_PRS_GET_ARM_ALTI",
         [60072] = "MAV_CMD_PRS_SHUTDOWN",
+    },
+    ["ACCELCAL_VEHICLE_POS"] = {
+        [1] = "ACCELCAL_VEHICLE_POS_LEVEL",
+        [2] = "ACCELCAL_VEHICLE_POS_LEFT",
+        [3] = "ACCELCAL_VEHICLE_POS_RIGHT",
+        [4] = "ACCELCAL_VEHICLE_POS_NOSEDOWN",
+        [5] = "ACCELCAL_VEHICLE_POS_NOSEUP",
+        [6] = "ACCELCAL_VEHICLE_POS_BACK",
+        [16777215] = "ACCELCAL_VEHICLE_POS_SUCCESS",
+        [16777216] = "ACCELCAL_VEHICLE_POS_FAILED",
+    },
+    ["HEADING_TYPE"] = {
+        [0] = "HEADING_TYPE_COURSE_OVER_GROUND",
+        [1] = "HEADING_TYPE_HEADING",
+        [2] = "HEADING_TYPE_DEFAULT",
     },
     ["SCRIPTING_CMD"] = {
         [0] = "SCRIPTING_CMD_REPL_START",
@@ -3319,6 +3321,9 @@ f.cmd_MAV_CMD_FIXED_MAG_CAL_YAW_param3 = ProtoField.new("param3: Latitude (float
 f.cmd_MAV_CMD_FIXED_MAG_CAL_YAW_param4 = ProtoField.new("param4: Longitude (float)", "mavlink_proto.cmd_MAV_CMD_FIXED_MAG_CAL_YAW_param4", ftypes.FLOAT, nil)
 
 f.cmd_MAV_CMD_SET_EKF_SOURCE_SET_param1 = ProtoField.new("param1: SourceSetId (float)", "mavlink_proto.cmd_MAV_CMD_SET_EKF_SOURCE_SET_param1", ftypes.FLOAT, nil)
+
+
+f.cmd_MAV_CMD_DO_EXECUTE_SCRIPT_param1 = ProtoField.new("param1: Script ID (float)", "mavlink_proto.cmd_MAV_CMD_DO_EXECUTE_SCRIPT_param1", ftypes.FLOAT, nil)
 
 f.cmd_MAV_CMD_DO_START_MAG_CAL_param1 = ProtoField.new("param1: Magnetometers Bitmask (float)", "mavlink_proto.cmd_MAV_CMD_DO_START_MAG_CAL_param1", ftypes.FLOAT, nil)
 f.cmd_MAV_CMD_DO_START_MAG_CAL_param2 = ProtoField.new("param2: Retry on Failure (float)", "mavlink_proto.cmd_MAV_CMD_DO_START_MAG_CAL_param2", ftypes.FLOAT, nil)
@@ -30486,6 +30491,106 @@ function payload_fns.payload_75_cmd42007(buffer, tree, msgid, offset, limit, pin
     value = tvbrange:le_float()
     subtree = tree:add_le(f.COMMAND_INT_z, tvbrange, value)
 end
+-- dissect payload of message type COMMAND_INT with command MAV_CMD_DO_DIVE
+function payload_fns.payload_75_cmd42010(buffer, tree, msgid, offset, limit, pinfo)
+    local padded, field_offset, value, subtree, tvbrange
+    if (offset + 35 > limit) then
+        padded = buffer(0, limit):bytes()
+        padded:set_size(offset + 35)
+        padded = padded:tvb("Untruncated payload")
+    else
+        padded = buffer
+    end
+    tvbrange = padded(offset + 30, 1)
+    value = tvbrange:le_uint()
+    subtree = tree:add_le(f.COMMAND_INT_target_system, tvbrange, value)
+    tvbrange = padded(offset + 31, 1)
+    value = tvbrange:le_uint()
+    subtree = tree:add_le(f.COMMAND_INT_target_component, tvbrange, value)
+    tvbrange = padded(offset + 32, 1)
+    value = tvbrange:le_uint()
+    subtree = tree:add_le(f.COMMAND_INT_frame, tvbrange, value)
+    tvbrange = padded(offset + 28, 2)
+    value = tvbrange:le_uint()
+    subtree = tree:add_le(f.COMMAND_INT_command, tvbrange, value)
+    tvbrange = padded(offset + 33, 1)
+    value = tvbrange:le_uint()
+    subtree = tree:add_le(f.COMMAND_INT_current, tvbrange, value)
+    tvbrange = padded(offset + 34, 1)
+    value = tvbrange:le_uint()
+    subtree = tree:add_le(f.COMMAND_INT_autocontinue, tvbrange, value)
+    tvbrange = padded(offset + 0, 4)
+    value = tvbrange:le_float()
+    subtree = tree:add_le(f.COMMAND_INT_param1, tvbrange, value)
+    tvbrange = padded(offset + 4, 4)
+    value = tvbrange:le_float()
+    subtree = tree:add_le(f.COMMAND_INT_param2, tvbrange, value)
+    tvbrange = padded(offset + 8, 4)
+    value = tvbrange:le_float()
+    subtree = tree:add_le(f.COMMAND_INT_param3, tvbrange, value)
+    tvbrange = padded(offset + 12, 4)
+    value = tvbrange:le_float()
+    subtree = tree:add_le(f.COMMAND_INT_param4, tvbrange, value)
+    tvbrange = padded(offset + 16, 4)
+    value = tvbrange:le_int()
+    subtree = tree:add_le(f.COMMAND_INT_x, tvbrange, value)
+    tvbrange = padded(offset + 20, 4)
+    value = tvbrange:le_int()
+    subtree = tree:add_le(f.COMMAND_INT_y, tvbrange, value)
+    tvbrange = padded(offset + 24, 4)
+    value = tvbrange:le_float()
+    subtree = tree:add_le(f.COMMAND_INT_z, tvbrange, value)
+end
+-- dissect payload of message type COMMAND_INT with command MAV_CMD_DO_EXECUTE_SCRIPT
+function payload_fns.payload_75_cmd42011(buffer, tree, msgid, offset, limit, pinfo)
+    local padded, field_offset, value, subtree, tvbrange
+    if (offset + 35 > limit) then
+        padded = buffer(0, limit):bytes()
+        padded:set_size(offset + 35)
+        padded = padded:tvb("Untruncated payload")
+    else
+        padded = buffer
+    end
+    tvbrange = padded(offset + 30, 1)
+    value = tvbrange:le_uint()
+    subtree = tree:add_le(f.COMMAND_INT_target_system, tvbrange, value)
+    tvbrange = padded(offset + 31, 1)
+    value = tvbrange:le_uint()
+    subtree = tree:add_le(f.COMMAND_INT_target_component, tvbrange, value)
+    tvbrange = padded(offset + 32, 1)
+    value = tvbrange:le_uint()
+    subtree = tree:add_le(f.COMMAND_INT_frame, tvbrange, value)
+    tvbrange = padded(offset + 28, 2)
+    value = tvbrange:le_uint()
+    subtree = tree:add_le(f.COMMAND_INT_command, tvbrange, value)
+    tvbrange = padded(offset + 33, 1)
+    value = tvbrange:le_uint()
+    subtree = tree:add_le(f.COMMAND_INT_current, tvbrange, value)
+    tvbrange = padded(offset + 34, 1)
+    value = tvbrange:le_uint()
+    subtree = tree:add_le(f.COMMAND_INT_autocontinue, tvbrange, value)
+    tvbrange = padded(offset + 0, 4)
+    value = tvbrange:le_float()
+    subtree = tree:add_le(f.cmd_MAV_CMD_DO_EXECUTE_SCRIPT_param1, tvbrange, value)
+    tvbrange = padded(offset + 4, 4)
+    value = tvbrange:le_float()
+    subtree = tree:add_le(f.COMMAND_INT_param2, tvbrange, value)
+    tvbrange = padded(offset + 8, 4)
+    value = tvbrange:le_float()
+    subtree = tree:add_le(f.COMMAND_INT_param3, tvbrange, value)
+    tvbrange = padded(offset + 12, 4)
+    value = tvbrange:le_float()
+    subtree = tree:add_le(f.COMMAND_INT_param4, tvbrange, value)
+    tvbrange = padded(offset + 16, 4)
+    value = tvbrange:le_int()
+    subtree = tree:add_le(f.COMMAND_INT_x, tvbrange, value)
+    tvbrange = padded(offset + 20, 4)
+    value = tvbrange:le_int()
+    subtree = tree:add_le(f.COMMAND_INT_y, tvbrange, value)
+    tvbrange = padded(offset + 24, 4)
+    value = tvbrange:le_float()
+    subtree = tree:add_le(f.COMMAND_INT_z, tvbrange, value)
+end
 -- dissect payload of message type COMMAND_INT with command MAV_CMD_DO_START_MAG_CAL
 function payload_fns.payload_75_cmd42424(buffer, tree, msgid, offset, limit, pinfo)
     local padded, field_offset, value, subtree, tvbrange
@@ -39757,6 +39862,94 @@ function payload_fns.payload_76_cmd42007(buffer, tree, msgid, offset, limit, pin
     tvbrange = padded(offset + 0, 4)
     value = tvbrange:le_float()
     subtree = tree:add_le(f.cmd_MAV_CMD_SET_EKF_SOURCE_SET_param1, tvbrange, value)
+    tvbrange = padded(offset + 4, 4)
+    value = tvbrange:le_float()
+    subtree = tree:add_le(f.COMMAND_LONG_param2, tvbrange, value)
+    tvbrange = padded(offset + 8, 4)
+    value = tvbrange:le_float()
+    subtree = tree:add_le(f.COMMAND_LONG_param3, tvbrange, value)
+    tvbrange = padded(offset + 12, 4)
+    value = tvbrange:le_float()
+    subtree = tree:add_le(f.COMMAND_LONG_param4, tvbrange, value)
+    tvbrange = padded(offset + 16, 4)
+    value = tvbrange:le_float()
+    subtree = tree:add_le(f.COMMAND_LONG_param5, tvbrange, value)
+    tvbrange = padded(offset + 20, 4)
+    value = tvbrange:le_float()
+    subtree = tree:add_le(f.COMMAND_LONG_param6, tvbrange, value)
+    tvbrange = padded(offset + 24, 4)
+    value = tvbrange:le_float()
+    subtree = tree:add_le(f.COMMAND_LONG_param7, tvbrange, value)
+end
+-- dissect payload of message type COMMAND_LONG with command MAV_CMD_DO_DIVE
+function payload_fns.payload_76_cmd42010(buffer, tree, msgid, offset, limit, pinfo)
+    local padded, field_offset, value, subtree, tvbrange
+    if (offset + 33 > limit) then
+        padded = buffer(0, limit):bytes()
+        padded:set_size(offset + 33)
+        padded = padded:tvb("Untruncated payload")
+    else
+        padded = buffer
+    end
+    tvbrange = padded(offset + 30, 1)
+    value = tvbrange:le_uint()
+    subtree = tree:add_le(f.COMMAND_LONG_target_system, tvbrange, value)
+    tvbrange = padded(offset + 31, 1)
+    value = tvbrange:le_uint()
+    subtree = tree:add_le(f.COMMAND_LONG_target_component, tvbrange, value)
+    tvbrange = padded(offset + 28, 2)
+    value = tvbrange:le_uint()
+    subtree = tree:add_le(f.COMMAND_LONG_command, tvbrange, value)
+    tvbrange = padded(offset + 32, 1)
+    value = tvbrange:le_uint()
+    subtree = tree:add_le(f.COMMAND_LONG_confirmation, tvbrange, value)
+    tvbrange = padded(offset + 0, 4)
+    value = tvbrange:le_float()
+    subtree = tree:add_le(f.COMMAND_LONG_param1, tvbrange, value)
+    tvbrange = padded(offset + 4, 4)
+    value = tvbrange:le_float()
+    subtree = tree:add_le(f.COMMAND_LONG_param2, tvbrange, value)
+    tvbrange = padded(offset + 8, 4)
+    value = tvbrange:le_float()
+    subtree = tree:add_le(f.COMMAND_LONG_param3, tvbrange, value)
+    tvbrange = padded(offset + 12, 4)
+    value = tvbrange:le_float()
+    subtree = tree:add_le(f.COMMAND_LONG_param4, tvbrange, value)
+    tvbrange = padded(offset + 16, 4)
+    value = tvbrange:le_float()
+    subtree = tree:add_le(f.COMMAND_LONG_param5, tvbrange, value)
+    tvbrange = padded(offset + 20, 4)
+    value = tvbrange:le_float()
+    subtree = tree:add_le(f.COMMAND_LONG_param6, tvbrange, value)
+    tvbrange = padded(offset + 24, 4)
+    value = tvbrange:le_float()
+    subtree = tree:add_le(f.COMMAND_LONG_param7, tvbrange, value)
+end
+-- dissect payload of message type COMMAND_LONG with command MAV_CMD_DO_EXECUTE_SCRIPT
+function payload_fns.payload_76_cmd42011(buffer, tree, msgid, offset, limit, pinfo)
+    local padded, field_offset, value, subtree, tvbrange
+    if (offset + 33 > limit) then
+        padded = buffer(0, limit):bytes()
+        padded:set_size(offset + 33)
+        padded = padded:tvb("Untruncated payload")
+    else
+        padded = buffer
+    end
+    tvbrange = padded(offset + 30, 1)
+    value = tvbrange:le_uint()
+    subtree = tree:add_le(f.COMMAND_LONG_target_system, tvbrange, value)
+    tvbrange = padded(offset + 31, 1)
+    value = tvbrange:le_uint()
+    subtree = tree:add_le(f.COMMAND_LONG_target_component, tvbrange, value)
+    tvbrange = padded(offset + 28, 2)
+    value = tvbrange:le_uint()
+    subtree = tree:add_le(f.COMMAND_LONG_command, tvbrange, value)
+    tvbrange = padded(offset + 32, 1)
+    value = tvbrange:le_uint()
+    subtree = tree:add_le(f.COMMAND_LONG_confirmation, tvbrange, value)
+    tvbrange = padded(offset + 0, 4)
+    value = tvbrange:le_float()
+    subtree = tree:add_le(f.cmd_MAV_CMD_DO_EXECUTE_SCRIPT_param1, tvbrange, value)
     tvbrange = padded(offset + 4, 4)
     value = tvbrange:le_float()
     subtree = tree:add_le(f.COMMAND_LONG_param2, tvbrange, value)

@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<mavlink>
+  <include>common.xml</include>
+
+  <enums>
+    <enum name="MAV_CMD">
+      <entry name="MAV_CMD_DO_DIVE" value="42010">
+        <description>Set TECS_SINK_MAX to 6 and TECS_PITCH_MIN to -10</description>
+      </entry>
+      <entry name="MAV_CMD_DO_EXECUTE_SCRIPT" value="42011">
+        <description>Execute Lua script by ID</description>
+        <param index="1" label="Script ID"/>
+      </entry>
+    </enum>
+  </enums>
+
+  <messages>
+  <!-- Required for schema validation, even if you don't define messages -->
+  </messages>
+</mavlink>
