@@ -183,9 +183,9 @@
         <param index="7">Empty.</param>
       </entry>
       <entry value="42010" name="MAV_CMD_DO_DIVE" hasLocation="true" isDestination="false">
-        <description>Set TECS_SINK_MAX to 6 and TECS_PITCH_MIN to -10</description>
-        <param index="1">Empty.</param>
-        <param index="2">Empty.</param>
+        <description>Point of impact, must have p1 and p2 to generate dive start point</description>
+        <param index="1">Heading in degrees to attack from.</param>
+        <param index="2">Distance in meters to start the dive from.</param>
         <param index="3">Empty.</param>
         <param index="4">Empty.</param>
         <param index="5">Empty.</param>
@@ -194,6 +194,16 @@
       </entry>
       <entry value="42011" name="MAV_CMD_DO_EXECUTE_SCRIPT" hasLocation="true" isDestination="false">
         <description>Execute Lua script by ID</description>
+        <param index="1" label="Script ID">Script ID.</param>
+        <param index="2">Empty.</param>
+        <param index="3">Empty.</param>
+        <param index="4">Empty.</param>
+        <param index="5">Empty.</param>
+        <param index="6">Empty.</param>
+        <param index="7">Empty.</param>
+      </entry>
+      <entry value="42012" name="MAV_CMD_PREDIVE" hasLocation="true" isDestination="false">
+        <description>Point to start the dive at</description>
         <param index="1" label="Script ID">Script ID.</param>
         <param index="2">Empty.</param>
         <param index="3">Empty.</param>

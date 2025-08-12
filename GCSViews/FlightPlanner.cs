@@ -1,3 +1,5 @@
+using MissionPlanner;
+using static MAVLink;
 using DotSpatial.Data;
 using DotSpatial.Projections;
 using GeoUtility.GeoSystem;
@@ -54,11 +56,15 @@ using MissionPlanner.ArduPilot.Mavlink;
 using System.Drawing.Imaging;
 using SharpKml.Engine;
 using MissionPlanner.Controls.Waypoints;
+using static MissionPlanner.Utilities.LTM;
+using MissionPlanner.Log;
 
 namespace MissionPlanner.GCSViews
 {
     public partial class FlightPlanner : MyUserControl, IDeactivate, IActivate
     {
+        private const MAV_CMD DO_DIVE_CMD = (MAV_CMD)42010;
+
         public FlightPlanner()
         {
             InitializeComponent();
@@ -536,10 +542,38 @@ namespace MissionPlanner.GCSViews
             return ret;
         }
 
+        private static double Deg2Rad(double d) => d * Math.PI / 180.0d;
+        private static double Rad2Deg(double rad) => rad * 180.0d / Math.PI;
+        //FLOATING POINT PROBLEMS?
+        private static (double Lat, double Lon, double DIST) OffsetHeading(double sLat, double sLon, double Dist, double Heading)
+        {
+            double R = 6378137.0;
+            double brng = Deg2Rad(Heading);
+            double lat1 = Deg2Rad(sLat);
+            double lon1 = Deg2Rad(sLon);
+
+            double lat2 = Math.Asin(Math.Sin(lat1) * Math.Cos(Dist / R) + Math.Cos(lat1) * Math.Sin(Dist / R) * Math.Cos(brng));
+            double lon2 = lon1 + Math.Atan2(Math.Sin(brng) * Math.Sin(Dist / R) * Math.Cos(lat1), Math.Cos(Dist / R) - Math.Sin(lat1) * Math.Sin(lat2));
+
+            return (Rad2Deg(lat2), Rad2Deg(lon2), Dist);
+        }
+
+        public void AddPreDive(double heading, double x, double y, double z, double dist)
+        {
+            var Loc = OffsetHeading(x, y, dist, heading);
+            AddCommand(MAVLink.MAV_CMD.PREDIVE, 0, 0, 0, 0, Loc.Lat, Loc.Lon, z);
+        }
+                    //TODO: ADD PARAMETER DESCRIPTION TO MAVLINK XMLs
         public int AddCommand(MAVLink.MAV_CMD cmd, double p1, double p2, double p3, double p4, double x, double y,
             double z, object tag = null)
         {
+            if (cmd == DO_DIVE_CMD && selectedrow > 0 && p2 != 0.0)
+            {
+                AddPreDive(p1, x, y, p3, p2);      // heading, lattitude, longitude, height to start dive at, distance to start dive
+            }
+
             selectedrow = Commands.Rows.Add();
+
 
             FillCommand(this.selectedrow, cmd, p1, p2, p3, p4, x, y, z, tag);
 
@@ -8245,6 +8279,27 @@ Column 1: Field type (RALLY is the only one at the moment -- may have RALLY_LAND
             results += Environment.NewLine + Environment.NewLine + count + " tile" + (count > 1 ? "s" : "") + " loaded !";
             CustomMessageBox.Show("Number of tiles loaded per zoom : " + Environment.NewLine + results, "Injecting Custom Map Results");
             map.Dispose();
+        }
+
+        private void myButton1_Click(object sender, EventArgs e)
+        {
+            for (int i = 0; i < Commands.Rows.Count; i++)
+            {
+                //ushort cmd = getCmdID(Commands.Rows[i].Cells[Command.Index].Value.ToString());
+                int cmd = Commands.Rows.Count-1;
+
+                double x = (double.Parse(Commands.Rows[cmd].Cells[Alt.Index].Value.ToString().Replace(',', '.')));
+                double y = (double.Parse(Commands.Rows[cmd].Cells[Lat.Index].Value.ToString().Replace(',', '.')));
+                double z = (double.Parse(Commands.Rows[cmd].Cells[Lon.Index].Value.ToString().Replace(',', '.')));
+
+                double p1 = (double.Parse(Commands.Rows[cmd].Cells[Param1.Index].Value.ToString()));
+                double p2 = (double.Parse(Commands.Rows[cmd].Cells[Param2.Index].Value.ToString()));
+                double p3 = (double.Parse(Commands.Rows[cmd].Cells[Param3.Index].Value.ToString()));
+                if (p2 != 0.0)
+                {
+                    AddPreDive(p1, x, y, p3, p2);      // heading, lattitude, longitude, height to start dive at, distance to start dive
+                }
+            }
         }
     }
 }

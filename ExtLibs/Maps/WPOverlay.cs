@@ -343,12 +343,19 @@ namespace MissionPlanner.ArduPilot
                     addpolygonmarker((a + 1).ToString(), item.lng, item.lat,
                         null, Color.Orange, 0, MAVLink.MAV_MISSION_TYPE.RALLY);
                 }
-		else if (command == (ushort)MAVLink.MAV_CMD.DO_DIVE) // dive
+		        else if (command == (ushort)MAVLink.MAV_CMD.DO_DIVE) // dive
                 {
                     pointlist.Add(new PointLatLngAlt(item.lat, item.lng, 0, (a + 1).ToString()));
                     route.Add(pointlist[pointlist.Count - 1]);
                     addpolygonmarker((a + 1).ToString(), item.lng, item.lat,
-                        null, Color.Orange, 0);
+                        null, Color.Red, 0);
+                }
+                else if (command == (ushort)MAVLink.MAV_CMD.PREDIVE) // dive
+                {
+                    pointlist.Add(new PointLatLngAlt(item.lat, item.lng, 0, (a + 1).ToString()));
+                    route.Add(pointlist[pointlist.Count - 1]);
+                    addpolygonmarker((a + 1).ToString(), item.lng, item.lat,
+                        null, Color.Yellow, 0);
                 }
                 else
                 {
